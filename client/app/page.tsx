@@ -78,7 +78,7 @@ export default function Home() {
               className="md:col-span-4"
             >
               <div className={cn(
-                "min-h-[60vh] md:min-h-[60vh] p-4 md:p-6",
+                "min-h-[60vh] md:min-h-[60vh] h-[90vh] p-4 md:p-6",
                 "bg-gray-900/90 backdrop-blur-xl",
                 "border border-gray-800/50 rounded-2xl shadow-2xl",
                 "transition-all duration-300 ease-in-out",

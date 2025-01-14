@@ -20,7 +20,7 @@ export default function ChatInterface() {
   const [comprehensionLevelIndex, setComprehensionLevelIndex] = useState(0)
   const [contentLengthIndex, setContentLengthIndex] = useState(0)
   const [toneIndex, setToneIndex] = useState(0)
-  const [chat, setChat] = useState([])
+  const [chat, setChat] = useState([{user: 'ai', text: 'Hello! I am your Study Buddy. How can I help you today?'}])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -123,9 +123,9 @@ export default function ChatInterface() {
 
       {/* Chat Box */}
         <p className="text-gray-400">Chat messages will appear here</p>
-      <Card className="flex-grow h-[70vh] custom-scrollbar overflow-scroll p-4 overflow-y-auto bg-grey-900/90 text-white">
+      <Card className="flex flex-col h-[70vh] custom-scrollbar overflow-scroll p-4 overflow-y-auto bg-grey-900/90 text-white">
         {chat.map((message, index) => (
-          <div key={index} className={`flex bg-gray-900 border border-gray-700 rounded-xl w-max max-w-full p-3 justify-self-${message.user==='ai'?'start':'end'} gap-2 mt-2`}>
+          <div key={index} className={`flex bg-gray-900 border border-gray-700 rounded-xl w-max max-w-full p-3 gap-2 mt-2`} style={{alignSelf: message.user==='ai'?'flex-start':'flex-end'}}>
             {message.user==='ai' &&
             <Avatar>
             <AvatarImage src="https://github.com/shadcn.png" />
