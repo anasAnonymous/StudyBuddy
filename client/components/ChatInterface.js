@@ -116,7 +116,7 @@ export default function ChatInterface() {
             <AvatarFallback>BD</AvatarFallback></Avatar>}
             <div className="flex items-center">
               <ReactMarkdown className="text-white">{message.text}</ReactMarkdown></div>  
-              {message.user!=='ai' && <Avatar className=''> <AvatarImage src="https://github.com/shadcn.png" />
+              {message.user!=='ai' && <Avatar className=''> <AvatarImage src=''/>
             <AvatarFallback>YO</AvatarFallback>
             </Avatar>}
           </div>

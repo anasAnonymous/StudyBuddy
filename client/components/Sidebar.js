@@ -10,10 +10,10 @@ import agentsConfig from '../lib/agents.json'
  
 export default function Sidebar({ setActiveView, activeView }) {
   const menuItems = [
-    { text: 'Chat', icon: <MessageCircleMore/>, view: 'chat', color: '#7BB3F5' },
-    { text: 'Flashcards', icon: <School2Icon />, view: 'flashcards', color: '#F5B97B' },
-    { text: 'Scenarios', icon: <BrainIcon />, view: 'scenarios', color: "#B97BF5" },
-    { text: 'Tests & Results', icon: <MessageCircleQuestionIcon />, view: 'tests', color: '#7BB3F5' },
+    { text: 'chat', icon: <MessageCircleMore/>, view: 'chat', color: '#7BB3F5' },
+    { text: 'flashcards', icon: <School2Icon />, view: 'flashcards', color: '#F5B97B' },
+    { text: 'scenarios', icon: <BrainIcon />, view: 'scenarios', color: "#B97BF5" },
+    { text: 'tests', icon: <MessageCircleQuestionIcon />, view: 'tests', color: '#7BB3F5' },
   ]
   const [agent, setAgent] = React.useState(null)
   const [agentConfig, setAgentConfig] = React.useState(null)
@@ -29,7 +29,7 @@ export default function Sidebar({ setActiveView, activeView }) {
   }, [activeView])
 
   return (
-    <ScrollArea className="h-[400px] md:max-w-[300px] lg:w-[300px] w-max rounded-md border p-4">
+    <ScrollArea className="h-[400px] md:max-w-[300px] xl:w-[300px] w-max rounded-md border p-4">
     {menuItems.map((item) => (
       <motion.div
         key={item.text}
@@ -42,7 +42,7 @@ export default function Sidebar({ setActiveView, activeView }) {
           className={cn(
             "w-full justify-start",
             activeView === item.view
-              ? `bg-[${item.color}] bg-opacity-15 hover:bg-opacity-25`
+              ? `bg-muted bg-opacity-15 hover:bg-opacity-25`
               : "text-foreground hover:bg-muted",
             "transition-all duration-300 ease-in-out"
           )}

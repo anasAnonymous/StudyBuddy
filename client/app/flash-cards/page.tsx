@@ -1,7 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Brain, LineChart, Shield } from 'lucide-react';
 import jsPDF from 'jspdf';
 import agentConfigs from '@/lib/agents.json';
 

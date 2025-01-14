@@ -63,9 +63,9 @@ export default function Home() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4, ease: 'easeOut' }}
-            className="md:col-span-1"
+            className="md:col-span-1 h-max flex justify-end"
           >
-            <div className="h-auto w-max float-right bg-gray-900/90 backdrop-blur-xl border border-gray-800/50 rounded-2xl shadow-2xl">
+            <div className="h-auto w-max bg-gray-900/90 backdrop-blur-xl border border-gray-800/50 rounded-2xl shadow-2xl">
               <Sidebar setActiveView={setActiveView} activeView={activeView} />
             </div>
           </motion.div>
