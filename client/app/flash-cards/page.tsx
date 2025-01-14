@@ -197,7 +197,7 @@ const FlashCardPage = () => {
     return (
       <div className="bg-gray-900 p-6">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold text-white text-center mb-12">Select Your AI Assistant</h1>
+          <h1 className="text-4xl font-bold text-white text-center mb-12">Select Your Study Buddy</h1>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {(Object.keys(agentConfigs) as Agent[]).map((agent) => {
               const AgentIcon = agentConfigs[agent as keyof typeof agentConfigs].icon;
