@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Brain, LineChart, Shield } from 'lucide-react';
+import jsPDF from 'jspdf';
 
 type Agent = 'AI' | 'Finance' | 'Cybersecurity' | null;
 
@@ -12,7 +13,7 @@ const agentConfigs = {
     cardColor: 'from-purple-600 to-pink-500',
     bgColor: 'bg-gray-900',
     prompt: 'Provide exactly 5 key technical concepts about the AI topic: ',
-    title: 'AI Assistant',
+    title: 'AI Buddy',
     description: 'An AI agent made to answer your AI-related queries',
     bgPattern: 'bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.15)_0%,transparent_100%)]',
     avatar: '/agents-pics/ai-bot.png' // Corrected avatar path for AI
@@ -23,7 +24,7 @@ const agentConfigs = {
     cardColor: 'from-emerald-600 to-teal-500',
     bgColor: 'bg-slate-900',
     prompt: 'Provide exactly 5 key financial insights about the topic: ',
-    title: 'Finance AI Agent',
+    title: 'Finance Buddy',
     description: 'An AI agent made to answer your Finance related queries',
     bgPattern: 'bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.15)_0%,transparent_100%)]',
     avatar: '/agents-pics/finance-bot.png' // Avatar path for Finance
@@ -34,11 +35,22 @@ const agentConfigs = {
     cardColor: 'from-orange-600 to-yellow-500',
     bgColor: 'bg-zinc-900',
     prompt: 'Provide exactly 5 key security insights regarding cybersecurity threats: ',
-    title: 'Cybersecurity AI Agent',
+    title: 'Cyber-security Buddy',
     description: 'An AI agent designed to enhance security awareness',
     bgPattern: 'bg-[radial-gradient(circle_at_center,rgba(239,68,68,0.15)_0%,transparent_100%)]',
     avatar: '/agents-pics/cyber-bot.png' // Avatar path for Cybersecurity
   },
+};
+
+// Define a mapping of Tailwind colors to RGB values
+const colorMapping: { [key: string]: string } = {
+  'from-blue-500': 'rgb(37, 99, 235)', // Example RGB for blue-500
+  'from-green-500': 'rgb(22, 163, 74)', // Example RGB for green-500
+  'from-red-500': 'rgb(239, 68, 68)', // Example RGB for red-500
+  'from-purple-600': 'rgb(128, 90, 213)', // Example RGB for purple-600
+  'from-emerald-600': 'rgb(16, 185, 129)', // Example RGB for emerald-600
+  'from-orange-600': 'rgb(255, 159, 28)', // Example RGB for orange-600
+  // Add more mappings as needed
 };
 
 const FlashCardPage = () => {
@@ -91,6 +103,94 @@ const FlashCardPage = () => {
     setTimeout(() => {
       setCurrentCardIndex((prev) => (prev - 1 + cards.length) % cards.length);
     }, 150);
+  };
+
+  const saveAsPDF = async (cards: string[], selectedAgent: Agent, topic: string) => {
+    if (!selectedAgent) return;
+    
+    // Initialize PDF with better default settings
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+    
+    // Set up document styling
+    const pageWidth = doc.internal.pageSize.width;
+    const pageHeight = doc.internal.pageSize.height;
+    const margin = 20; // Increased margin for better readability
+    const contentWidth = pageWidth - (2 * margin);
+    
+    // Add header with styling
+    doc.setFillColor(240, 240, 240); // Light gray background for header
+    doc.rect(0, 0, pageWidth, 40, 'F');
+    
+    // Add title
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(24);
+    doc.setTextColor(50, 50, 50);
+    doc.text(`${selectedAgent} Flash Cards`, margin, 25);
+    
+    // Add topic
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(14);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Topic: ${topic}`, margin, 35);
+    
+    // Set up content styling
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    
+    let yPosition = 60; // Start content after header
+    
+    // Add cards with improved formatting
+    cards.forEach((card, index) => {
+      // Add card number with styling
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(14);
+      doc.text(`Card ${index + 1}`, margin, yPosition);
+      yPosition += 10;
+      
+      // Add card content with proper text wrapping
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(12);
+      
+      // Split text into wrapped lines
+      const lines = doc.splitTextToSize(card, contentWidth);
+      
+      // Add background for card content
+      doc.setFillColor(248, 248, 248);
+      doc.rect(margin - 5, yPosition - 5, contentWidth + 10, (lines.length * 7) + 10, 'F');
+      
+      // Add border
+      doc.setDrawColor(200, 200, 200);
+      doc.rect(margin - 5, yPosition - 5, contentWidth + 10, (lines.length * 7) + 10, 'S');
+      
+      // Add text
+      lines.forEach((line: string) => {
+        doc.text(line, margin, yPosition);
+        yPosition += 7;
+      });
+      
+      yPosition += 20; // Space between cards
+      
+      // Check if we need a new page
+      if (yPosition > pageHeight - margin) {
+        doc.addPage();
+        yPosition = margin + 20;
+      }
+    });
+    
+    // Add footer
+    const footer = `Generated on ${new Date().toLocaleDateString()}`;
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(10);
+    doc.setTextColor(150, 150, 150);
+    doc.text(footer, margin, pageHeight - 10);
+    
+    // Save the document
+    doc.save(`${selectedAgent.toLowerCase()}-flashcards.pdf`);
   };
 
   if (!selectedAgent) {
@@ -181,6 +281,7 @@ const FlashCardPage = () => {
             className={`relative h-64 perspective-1000 transition-transform duration-500 transform-style-preserve-3d cursor-pointer
               ${isFlipped ? 'rotate-y-180' : ''}`}
             onClick={() => setIsFlipped(!isFlipped)}
+            id={`flashcard-${currentCardIndex}`}
           >
             <div className={`absolute w-full h-full bg-gradient-to-br ${agentConfigs[selectedAgent].color} rounded-xl p-6 shadow-xl backface-hidden`}>
               <div className="flex items-center justify-center h-full">
@@ -218,6 +319,16 @@ const FlashCardPage = () => {
             </button>
           </div>
         </div>
+      )}
+
+      {cards.length > 0 && (
+        <button
+          onClick={() => saveAsPDF(cards, selectedAgent, topic)}
+          className={`w-full bg-gradient-to-r ${agentConfigs[selectedAgent].color} 
+            hover:opacity-90 text-white mt-4 font-medium py-3 rounded-lg transition-all`}
+        >
+          Save as PDF
+        </button>
       )}
 
       <style jsx>{`
