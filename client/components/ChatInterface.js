@@ -3,17 +3,48 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Slider } from '@/components/ui/slider'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip"
+
 
 
 const comprehensionLevels = ["Layman", "High School", "College", "Expert"]
 const contentLengths = ["Short", "Medium", "Long"]
 const tones = ["Friendly", "Formal", "Informal"]
+
+
+const SliderOption = ({ title, val, setVal, options }) => {
+  const [isHovered, setIsHovered] = useState(false)
+  return (
+    <div className="flex flex-col w-[45%] md:w-[30%] relative">
+      <div className="flex flex-col" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} onTouchStart={() => setIsHovered(true)} onTouchEnd={() => setIsHovered(false)}>
+        <Label htmlFor={title}>{title}</Label>
+        <Slider
+          id={title}
+          defaultValue={[val]}
+          max={options.length - 1}
+          step={1}
+          onValueChange={(value) => setVal(value[0])}
+          className="custom-slider w-full mt-2 rounded-full"
+        />
+        <span className="text-sm font-medium mt-2">
+          {options[val]}
+        </span>
+      </div>
+      <div className={`absolute ${isHovered?'':'hidden'} z-10 top-[65px] flex flex-col gap-2 ml-4 bg-zinc-700 rounded-xl p-4`} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} onTouchStart={() => setIsHovered(true)} onTouchEnd={() => setIsHovered(false)}>
+        <p>Choose a comprehension level for the content.</p>
+        <ul className='list-disc pl-4'>
+          {options.map((option, index) => (
+            <li key={index} className='list-disc'>{option}</li>
+          ))}
+        </ul>
+        </div>
+  </div>
+  )
+}
 
 export default function ChatInterface() {
   const [message, setMessage] = useState('')
@@ -72,53 +103,9 @@ export default function ChatInterface() {
     <div className="flex flex-col h-full gap-4">
       {/* Controls */}
       <div className="flex flex-wrap flex-1 gap-6 mx-5">
-      {/* Comprehension Slider */}
-      <div className="flex flex-col flex-1">
-        <Label htmlFor="comprehension">Comprehension</Label>
-        <Slider
-          id="comprehension"
-          defaultValue={[comprehensionLevelIndex]}
-          max={3}
-          step={1}
-          onValueChange={(value) => setComprehensionLevelIndex(value[0])}
-          className="custom-slider w-full mt-2 rounded-full"
-        />
-        <span className="text-sm font-medium mt-2">
-          {["Layman", "High School", "College", "Expert"][comprehensionLevelIndex]}
-        </span>
-      </div>
-
-      {/* Length Slider */}
-      <div className="flex flex-col flex-1">
-        <Label htmlFor="length">Length</Label>
-        <Slider
-          id="length"
-          defaultValue={[contentLengthIndex]}
-          max={2}
-          step={1}
-          onValueChange={(value) => setContentLengthIndex(value[0])}
-          className="w-full mt-2"
-        />
-        <span className="text-sm font-medium mt-2">
-          {["Short", "Medium", "Long"][contentLengthIndex]}
-        </span>
-      </div>
-
-      {/* Tone Slider */}
-      <div className="flex flex-col flex-1">
-        <Label htmlFor="tone">Tone</Label>
-        <Slider
-          id="tone"
-          defaultValue={[toneIndex]}
-          max={2}
-          step={1}
-          onValueChange={(value) => setToneIndex(value[0])}
-          className="w-full mt-2"
-        />
-        <span className="text-sm font-medium mt-2">
-          {["Friendly", "Formal", "Informal"][toneIndex]}
-        </span>
-      </div>
+        <SliderOption title="Comprehension Level" val={comprehensionLevelIndex} setVal={setComprehensionLevelIndex} options={comprehensionLevels} />
+        <SliderOption title="Content Length" val={contentLengthIndex} setVal={setContentLengthIndex} options={contentLengths} />
+        <SliderOption title="Tone" val={toneIndex} setVal={setToneIndex} options={tones} />
     </div>
 
       {/* Chat Box */}
