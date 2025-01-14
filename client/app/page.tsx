@@ -27,12 +27,29 @@ export default function Home() {
     }
   }
 
+  const handleRefresh = () => {
+    window.location.reload();
+  }
+
   return (
     <div className="relative min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-gray-950">
       {/* Background decorative elements */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_bottom_right,#6a11cb,#2575fc)] opacity-20" />
       
-      <div className="relative container mx-auto min-h-screen p-4">
+      {/* Navbar */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 p-4 backdrop-blur-lg z-10"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+      >
+        <h1 className="text-white text-xl md:text-2xl font-bold cursor-pointer ml-4" onClick={handleRefresh}>
+          Study Buddy
+        </h1>
+      </motion.div>
+
+      <div className="relative container mx-auto min-h-screen p-4 pt-20">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6 min-h-screen">
           {/* Sidebar */}
           <motion.div
@@ -41,7 +58,7 @@ export default function Home() {
             transition={{ duration: 0.4, ease: 'easeOut' }}
             className="md:col-span-1"
           >
-            <div className="h-auto md:h-[98vh] bg-gray-900/90 backdrop-blur-xl border border-gray-800/50 rounded-2xl shadow-2xl overflow-hidden">
+            <div className="h-auto md:h-[70vh] bg-gray-900/90 backdrop-blur-xl border border-gray-800/50 rounded-2xl shadow-2xl overflow-hidden">
               <Sidebar setActiveView={setActiveView} activeView={activeView} />
             </div>
           </motion.div>
@@ -61,7 +78,7 @@ export default function Home() {
               className="md:col-span-4"
             >
               <div className={cn(
-                "min-h-[98vh] p-6",
+                "min-h-[60vh] md:min-h-[80vh] p-4 md:p-6",
                 "bg-gray-900/90 backdrop-blur-xl",
                 "border border-gray-800/50 rounded-2xl shadow-2xl",
                 "transition-all duration-300 ease-in-out",

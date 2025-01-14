@@ -83,7 +83,7 @@ const FlashCardPage = () => {
 
   if (!selectedAgent) {
     return (
-      <div className="min-h-screen bg-gray-900 p-6">
+      <div className="bg-gray-900 p-6">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold text-white text-center mb-12">Choose Your Agent</h1>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -110,80 +110,78 @@ const FlashCardPage = () => {
   }
 
   return (
-    <div className={`min-h-screen ${agentConfigs[selectedAgent].bgColor} p-6`}>
-      <div className="max-w-2xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-white text-center">{selectedAgent} Flash Cards</h1>
-          <button
-            onClick={() => setSelectedAgent(null)}
-            className="text-white hover:text-gray-300 transition-colors"
-          >
-            Change Agent
-          </button>
-        </div>
-        
-        <div className="bg-opacity-20 bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
-          <input
-            type="text"
-            value={topic}
-            onChange={(e) => setTopic(e.target.value)}
-            className={`w-full p-3 mb-4 border border-gray-600 rounded-lg text-gray-200 
-              bg-opacity-50 bg-gray-700 focus:ring-2 focus:ring-${agentConfigs[selectedAgent].color.split('-')[1]} focus:border-transparent`}
-            placeholder={`Enter a ${selectedAgent.toLowerCase()} topic...`}
-          />
-          <button
-            onClick={generateFlashCards}
-            disabled={isLoading}
-            className={`w-full bg-gradient-to-r ${agentConfigs[selectedAgent].color} 
-              hover:opacity-90 text-white font-medium py-3 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
-          >
-            {isLoading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : 'Generate Flash Cards'}
-          </button>
-        </div>
+    <div className={`max-w-2xl mx-auto ${agentConfigs[selectedAgent].bgColor} p-6 rounded-lg shadow-lg`}>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-4xl font-bold text-white text-center">{selectedAgent} Flash Cards</h1>
+        <button
+          onClick={() => setSelectedAgent(null)}
+          className="text-white hover:text-gray-300 transition-colors"
+        >
+          Change Agent
+        </button>
+      </div>
+      
+      <div className="bg-opacity-20 bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
+        <input
+          type="text"
+          value={topic}
+          onChange={(e) => setTopic(e.target.value)}
+          className={`w-full p-3 mb-4 border border-gray-600 rounded-lg text-gray-200 
+            bg-opacity-50 bg-gray-700 focus:ring-2 focus:ring-${agentConfigs[selectedAgent].color.split('-')[1]} focus:border-transparent`}
+          placeholder={`Enter a ${selectedAgent.toLowerCase()} topic...`}
+        />
+        <button
+          onClick={generateFlashCards}
+          disabled={isLoading}
+          className={`w-full bg-gradient-to-r ${agentConfigs[selectedAgent].color} 
+            hover:opacity-90 text-white font-medium py-3 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
+        >
+          {isLoading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : 'Generate Flash Cards'}
+        </button>
+      </div>
 
-        {cards.length > 0 && (
-          <div className="relative">
-            <div 
-              className={`relative h-64 perspective-1000 transition-transform duration-500 transform-style-preserve-3d cursor-pointer
-                ${isFlipped ? 'rotate-y-180' : ''}`}
-              onClick={() => setIsFlipped(!isFlipped)}
-            >
-              <div className={`absolute w-full h-full bg-gradient-to-br ${agentConfigs[selectedAgent].color} rounded-xl p-6 shadow-xl backface-hidden`}>
-                <div className="flex items-center justify-center h-full">
-                  <p className="text-2xl font-medium text-white text-center">
-                    {`Question ${currentCardIndex + 1}`}
-                  </p>
-                </div>
-              </div>
-              <div className={`absolute w-full h-full bg-gradient-to-br ${agentConfigs[selectedAgent].cardColor} rounded-xl p-6 shadow-xl backface-hidden rotate-y-180`}>
-                <div className="flex items-center justify-center h-full">
-                  <p className="text-xl text-white text-center">
-                    {cards[currentCardIndex]}
-                  </p>
-                </div>
+      {cards.length > 0 && (
+        <div className="relative">
+          <div 
+            className={`relative h-64 perspective-1000 transition-transform duration-500 transform-style-preserve-3d cursor-pointer
+              ${isFlipped ? 'rotate-y-180' : ''}`}
+            onClick={() => setIsFlipped(!isFlipped)}
+          >
+            <div className={`absolute w-full h-full bg-gradient-to-br ${agentConfigs[selectedAgent].color} rounded-xl p-6 shadow-xl backface-hidden`}>
+              <div className="flex items-center justify-center h-full">
+                <p className="text-2xl font-medium text-white text-center">
+                  {`Question ${currentCardIndex + 1}`}
+                </p>
               </div>
             </div>
-
-            <div className="flex justify-between mt-6">
-              <button
-                onClick={previousCard}
-                className="p-2 rounded-full bg-gray-700 hover:bg-gray-600 text-white transition-colors"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <span className="text-gray-300">
-                {currentCardIndex + 1} / {cards.length}
-              </span>
-              <button
-                onClick={nextCard}
-                className="p-2 rounded-full bg-gray-700 hover:bg-gray-600 text-white transition-colors"
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
+            <div className={`absolute w-full h-full bg-gradient-to-br ${agentConfigs[selectedAgent].cardColor} rounded-xl p-6 shadow-xl backface-hidden rotate-y-180`}>
+              <div className="flex items-center justify-center h-full">
+                <p className="text-xl text-white text-center">
+                  {cards[currentCardIndex]}
+                </p>
+              </div>
             </div>
           </div>
-        )}
-      </div>
+
+          <div className="flex justify-between mt-6">
+            <button
+              onClick={previousCard}
+              className="p-2 rounded-full bg-gray-700 hover:bg-gray-600 text-white transition-colors"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            <span className="text-gray-300">
+              {currentCardIndex + 1} / {cards.length}
+            </span>
+            <button
+              onClick={nextCard}
+              className="p-2 rounded-full bg-gray-700 hover:bg-gray-600 text-white transition-colors"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         .perspective-1000 {
