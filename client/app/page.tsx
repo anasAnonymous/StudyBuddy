@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Sidebar from '@/components/Sidebar'
 import ChatInterface from '@/components/ChatInterface'
 import FlashcardView from '@/app/flash-cards/page'
 import ScenarioView from '@/components/ScenarioView'
+import SelectAgent from '@/components/SelectAgent'
 import TestView from '@/components/TestView'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
@@ -22,6 +23,8 @@ export default function Home() {
         return <ScenarioView />
       case 'tests':
         return <TestView />
+      case 'agent':
+        return <SelectAgent setActiveView={setActiveView}/>
       default:
         return <ChatInterface />
     }
@@ -30,7 +33,11 @@ export default function Home() {
   const handleRefresh = () => {
     window.location.reload();
   }
-
+  useEffect(() => {
+    const agent = localStorage.getItem('selectedAgent');
+    if (!agent)
+      setActiveView('agent');
+    }, []);
   return (
     <div className="relative min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-gray-950">
       {/* Background decorative elements */}
@@ -58,7 +65,7 @@ export default function Home() {
             transition={{ duration: 0.4, ease: 'easeOut' }}
             className="md:col-span-1"
           >
-            <div className="h-auto md:h-[50vh] bg-gray-900/90 backdrop-blur-xl border border-gray-800/50 rounded-2xl shadow-2xl overflow-hidden">
+            <div className="h-auto w-max float-right bg-gray-900/90 backdrop-blur-xl border border-gray-800/50 rounded-2xl shadow-2xl">
               <Sidebar setActiveView={setActiveView} activeView={activeView} />
             </div>
           </motion.div>

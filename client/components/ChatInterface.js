@@ -7,14 +7,11 @@ import { Label } from '@/components/ui/label'
 import ReactMarkdown from 'react-markdown'
 import { Slider } from '@/components/ui/slider'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip"
-
 
 
 const comprehensionLevels = ["Layman", "High School", "College", "Expert"]
 const contentLengths = ["Short", "Medium", "Long"]
 const tones = ["Friendly", "Formal", "Informal"]
-
 
 const SliderOption = ({ title, val, setVal, options }) => {
   const [isHovered, setIsHovered] = useState(false)

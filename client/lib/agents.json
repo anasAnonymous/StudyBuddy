@@ -1,0 +1,35 @@
+{
+    "AI": {
+        "icon": "Brain",
+        "color": "from-blue-500 to-purple-600",
+        "cardColor": "from-purple-600 to-pink-500",
+        "bgColor": "bg-gray-900",
+        "prompt": "Provide exactly 5 key technical concepts about the AI topic: ",
+        "title": "AI Buddy",
+        "description": "An AI agent made to answer your AI-related queries",
+        "bgPattern": "bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.15)_0%,transparent_100%)]",
+        "avatar": "/agents-pics/ai-bot.png"
+    },
+    "Finance": {
+        "icon": "LineChart",
+        "color": "from-green-500 to-emerald-600",
+        "cardColor": "from-emerald-600 to-teal-500",
+        "bgColor": "bg-slate-900",
+        "prompt": "Provide exactly 5 key financial insights about the topic: ",
+        "title": "Finance Buddy",
+        "description": "An AI agent made to answer your Finance related queries",
+        "bgPattern": "bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.15)_0%,transparent_100%)]",
+        "avatar": "/agents-pics/finance-bot.png"
+    },
+    "Cybersecurity": {
+        "icon": "Shield",
+        "color": "from-red-500 to-orange-600",
+        "cardColor": "from-orange-600 to-yellow-500",
+        "bgColor": "bg-zinc-900",
+        "prompt": "Provide exactly 5 key security insights regarding cybersecurity threats: ",
+        "title": "Cyber-security Buddy",
+        "description": "An AI agent designed to enhance security awareness",
+        "bgPattern": "bg-[radial-gradient(circle_at_center,rgba(239,68,68,0.15)_0%,transparent_100%)]",
+        "avatar": "/agents-pics/cyber-bot.png"
+    }
+}
