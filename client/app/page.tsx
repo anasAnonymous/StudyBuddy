@@ -58,7 +58,7 @@ export default function Home() {
             transition={{ duration: 0.4, ease: 'easeOut' }}
             className="md:col-span-1"
           >
-            <div className="h-auto md:h-[70vh] bg-gray-900/90 backdrop-blur-xl border border-gray-800/50 rounded-2xl shadow-2xl overflow-hidden">
+            <div className="h-auto md:h-[50vh] bg-gray-900/90 backdrop-blur-xl border border-gray-800/50 rounded-2xl shadow-2xl overflow-hidden">
               <Sidebar setActiveView={setActiveView} activeView={activeView} />
             </div>
           </motion.div>
@@ -78,7 +78,7 @@ export default function Home() {
               className="md:col-span-4"
             >
               <div className={cn(
-                "min-h-[60vh] md:min-h-[80vh] p-4 md:p-6",
+                "min-h-[60vh] md:min-h-[60vh] p-4 md:p-6",
                 "bg-gray-900/90 backdrop-blur-xl",
                 "border border-gray-800/50 rounded-2xl shadow-2xl",
                 "transition-all duration-300 ease-in-out",

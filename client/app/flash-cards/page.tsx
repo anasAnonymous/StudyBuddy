@@ -12,6 +12,10 @@ const agentConfigs = {
     cardColor: 'from-purple-600 to-pink-500',
     bgColor: 'bg-gray-900',
     prompt: 'Provide exactly 5 key technical concepts about the AI topic: ',
+    title: 'AI Assistant',
+    description: 'An AI agent made to answer your AI-related queries',
+    bgPattern: 'bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.15)_0%,transparent_100%)]',
+    avatar: '/agents-pics/ai-bot.png' // Corrected avatar path for AI
   },
   Finance: {
     icon: LineChart,
@@ -19,13 +23,21 @@ const agentConfigs = {
     cardColor: 'from-emerald-600 to-teal-500',
     bgColor: 'bg-slate-900',
     prompt: 'Provide exactly 5 key financial insights about the topic: ',
+    title: 'Finance AI Agent',
+    description: 'An AI agent made to answer your Finance related queries',
+    bgPattern: 'bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.15)_0%,transparent_100%)]',
+    avatar: '/agents-pics/finance-bot.png' // Avatar path for Finance
   },
   Cybersecurity: {
     icon: Shield,
     color: 'from-red-500 to-orange-600',
     cardColor: 'from-orange-600 to-yellow-500',
     bgColor: 'bg-zinc-900',
-    prompt: 'Provide exactly 5 key security considerations about the topic: ',
+    prompt: 'Provide exactly 5 key security insights regarding cybersecurity threats: ',
+    title: 'Cybersecurity AI Agent',
+    description: 'An AI agent designed to enhance security awareness',
+    bgPattern: 'bg-[radial-gradient(circle_at_center,rgba(239,68,68,0.15)_0%,transparent_100%)]',
+    avatar: '/agents-pics/cyber-bot.png' // Avatar path for Cybersecurity
   },
 };
 
@@ -36,6 +48,7 @@ const FlashCardPage = () => {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [hoveredAgent, setHoveredAgent] = useState<Agent | null>(null);
 
   const generateFlashCards = async () => {
     setIsLoading(true);
@@ -50,7 +63,6 @@ const FlashCardPage = () => {
       const result = await model.generateContent(prompt);
       const content = result.response.text().trim();
       
-      // Split the content into separate points and clean them up
       const points = content
         .split('\n')
         .map((point: string) => point.replace(/^\d+[\)\.]\s*/, '').trim())
@@ -85,20 +97,43 @@ const FlashCardPage = () => {
     return (
       <div className="bg-gray-900 p-6">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold text-white text-center mb-12">Choose Your Agent</h1>
+          <h1 className="text-4xl font-bold text-white text-center mb-12">Select Your AI Assistant</h1>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {(Object.keys(agentConfigs) as Agent[]).map((agent) => {
               const AgentIcon = agentConfigs[agent as keyof typeof agentConfigs].icon;
+              const isHovered = hoveredAgent === agent;
               return (
                 <button
                   key={agent}
                   onClick={() => setSelectedAgent(agent)}
-                  className={`p-8 rounded-xl bg-gradient-to-br ${agentConfigs[agent as keyof typeof agentConfigs].color} 
+                  onMouseEnter={() => setHoveredAgent(agent)}
+                  onMouseLeave={() => setHoveredAgent(null)}
+                  className={`relative overflow-hidden group p-8 rounded-xl 
+                    bg-gradient-to-br ${agentConfigs[agent as keyof typeof agentConfigs].color} 
                     hover:scale-105 transition-all duration-300 shadow-xl`}
                 >
-                  <div className="flex flex-col items-center space-y-4">
-                    <AgentIcon className="w-16 h-16 text-white" />
-                    <span className="text-xl font-bold text-white">{agent}</span>
+                  <div className={`absolute inset-0 ${agentConfigs[agent as keyof typeof agentConfigs].bgPattern} 
+                    opacity-50 transition-opacity duration-300 ${isHovered ? 'opacity-100' : ''}`} />
+                  <div className="relative z-10 flex flex-col items-center space-y-4">
+                    <div className="relative w-32 h-32 rounded-full overflow-hidden bg-gray-800">
+                      <img src={agentConfigs[agent as keyof typeof agentConfigs].avatar} alt={`${agent} avatar`} className="absolute inset-0 w-full h-full object-cover" />
+                    </div>
+                    <div className={`w-20 h-20 rounded-full bg-white/10 flex items-center justify-center 
+                      transform transition-transform duration-300 ${isHovered ? 'scale-110' : ''}`}>
+                      <AgentIcon className={`w-12 h-12 text-white transform transition-transform duration-300 
+                        ${isHovered ? 'rotate-12' : ''}`} />
+                    </div>
+                    <div className="text-center">
+                      <h3 className="text-2xl font-bold text-white mb-2">
+                        {agentConfigs[agent as keyof typeof agentConfigs].title}
+                      </h3>
+                      <p className="text-sm text-white/80">
+                        {agentConfigs[agent as keyof typeof agentConfigs].description}
+                      </p>
+                    </div>
+                    <div className={`absolute bottom-0 left-0 right-0 h-1 bg-white/30 
+                      transform origin-left transition-transform duration-300 
+                      ${isHovered ? 'scale-x-100' : 'scale-x-0'}`} />
                   </div>
                 </button>
               );
@@ -112,7 +147,7 @@ const FlashCardPage = () => {
   return (
     <div className={`max-w-2xl mx-auto ${agentConfigs[selectedAgent].bgColor} p-6 rounded-lg shadow-lg`}>
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold text-white text-center">{selectedAgent} Flash Cards</h1>
+        <h1 className="text-4xl font-bold text-white text-center">{agentConfigs[selectedAgent].title}</h1>
         <button
           onClick={() => setSelectedAgent(null)}
           className="text-white hover:text-gray-300 transition-colors"
@@ -149,6 +184,7 @@ const FlashCardPage = () => {
           >
             <div className={`absolute w-full h-full bg-gradient-to-br ${agentConfigs[selectedAgent].color} rounded-xl p-6 shadow-xl backface-hidden`}>
               <div className="flex items-center justify-center h-full">
+                <img src={agentConfigs[selectedAgent].avatar} alt={`${selectedAgent} avatar`} className="w-10 h-10 rounded-full absolute top-4 left-4" />
                 <p className="text-2xl font-medium text-white text-center">
                   {`Question ${currentCardIndex + 1}`}
                 </p>
@@ -156,6 +192,7 @@ const FlashCardPage = () => {
             </div>
             <div className={`absolute w-full h-full bg-gradient-to-br ${agentConfigs[selectedAgent].cardColor} rounded-xl p-6 shadow-xl backface-hidden rotate-y-180`}>
               <div className="flex items-center justify-center h-full">
+                <img src={agentConfigs[selectedAgent].avatar} alt={`${selectedAgent} avatar`} className="w-10 h-10 rounded-full absolute top-4 left-4" />
                 <p className="text-xl text-white text-center">
                   {cards[currentCardIndex]}
                 </p>
