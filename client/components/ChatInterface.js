@@ -132,6 +132,13 @@ export default function ChatInterface() {
     }
   }
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // Prevent default behavior (like form submission)
+      handleSendMessage(); // Call the send message function
+    }
+  }
+
   return (
     <div className="flex flex-col h-full gap-4">
       {/* Controls */}
@@ -192,7 +199,14 @@ export default function ChatInterface() {
       {/* Input and Send Button */}
       {error && <p className='text-[#ff2222] cursor-pointer hover:underline' onClick={() => handleRetry()}>{error}</p>}
       <div className="flex items-center gap-2">
-        <input type='text' placeholder='Type your message here...' value={message} onChange={(e) => setMessage(e.target.value)} className='flex-grow h-[38px] px-4 rounded-md bg-gray-700 outline-none text-white placeholder-gray-400' />
+        <input 
+          type='text' 
+          placeholder='Type your message here...' 
+          value={message} 
+          onChange={(e) => setMessage(e.target.value)} 
+          onKeyDown={handleKeyDown} // Add key down event handler
+          className='flex-grow h-[38px] px-4 rounded-md bg-gray-700 outline-none text-white placeholder-gray-400' 
+        />
         <Button onClick={handleSendMessage} className='bg-[#9f3ec5] text-white' disabled={!message.trim()}>
           Send
         </Button>
