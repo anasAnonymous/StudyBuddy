@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.9.10",
     "@firebase/analytics": "^0.10.10",
     "@firebase/firestore": "^4.7.5",
     "@google/generative-ai": "^0.21.0",
