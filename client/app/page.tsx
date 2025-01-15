@@ -12,6 +12,8 @@ import { cn } from '@/lib/utils'
 import pins from '@/components/pins'
 import PinBoard from '@/components/pins'
 import ObjectDetection from '@/components/object-detection'
+import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { Button } from '@/components/ui/button';
 
 export default function Home() {
   const [activeView, setActiveView] = useState('chat')
@@ -58,9 +60,33 @@ export default function Home() {
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
       >
-        <h1 className="text-white text-xl md:text-2xl font-bold cursor-pointer ml-4" onClick={handleRefresh}>
-          Study Buddy
-        </h1>
+        <div className="container mx-auto flex items-center justify-between">
+          <h1 className="text-white text-xl md:text-2xl font-bold cursor-pointer" onClick={handleRefresh}>
+            Study Buddy
+          </h1>
+          
+          {/* Auth Buttons */}
+          <div className="flex items-center gap-4">
+            <SignedOut>
+              <SignInButton mode="modal">
+                <Button variant="default" size="lg" className="font-semibold bg-purple-600 hover:bg-purple-700">
+                  Sign In
+                </Button>
+              </SignInButton>
+            </SignedOut>
+            <SignedIn>
+              <UserButton 
+                appearance={{
+                  elements: {
+                    avatarBox: "w-10 h-10 rounded-full",
+                    userButtonPopoverCard: "bg-popover border border-border shadow-lg",
+                    userButtonPopoverFooter: "hidden"
+                  }
+                }}
+              />
+            </SignedIn>
+          </div>
+        </div>
       </motion.div>
 
       <div className="relative container mx-auto min-h-screen p-4 pt-20">
