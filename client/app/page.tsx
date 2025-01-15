@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import pins from '@/components/pins'
 import PinBoard from '@/components/pins'
+import ObjectDetection from '@/components/object-detection'
 
 export default function Home() {
   const [activeView, setActiveView] = useState('chat')
@@ -29,6 +30,8 @@ export default function Home() {
         return <SelectAgent setActiveView={setActiveView}/>
       case 'pins':
         return <PinBoard />
+      case 'desk-declutter':
+        return <ObjectDetection />
       default:
         return <ChatInterface />
     }
