@@ -87,6 +87,7 @@ const ObjectDetection = () => {
         <div className='mt-8'>
             {isLoading ? (
                 <div className="flex justify-center items-center">
+                    <div className="flex justify-center"><div>Loading...</div></div>
                     <img src="https://i.pinimg.com/originals/e2/63/00/e26300c0c746d3163a0f48223c897cee.gif" alt="Loading..." />
                 </div>
             ) : (

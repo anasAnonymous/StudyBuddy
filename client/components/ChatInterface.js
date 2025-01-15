@@ -118,7 +118,7 @@ export default function ChatInterface() {
       console.log('Document written with ID: ', docRef.id);
       chat[index].pinned = true; // Mark the message as pinned
       setChat([...chat]); // Update the chat state
-      setSuccessMessage('Message pinned successfully!'); // Set success message
+      setSuccessMessage('Saved to Pins Board!'); // Set success message
       setShowModal(true); // Show modal
       setTimeout(() => {
         setShowModal(false); // Hide modal after 3 seconds
@@ -166,13 +166,21 @@ export default function ChatInterface() {
       {/* Success Modal */}
       {showModal && (
         <motion.div 
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-80 backdrop-blur-sm transition-all duration-300 ease-in-out"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
         >
-          <div className="bg-white p-4 rounded-lg shadow-lg">
-            <p className="text-green-500">{successMessage}</p>
+          <div className="bg-gray-800 p-6 rounded-lg shadow-2xl transform transition-transform duration-300 hover:scale-105">
+            <p className="text-green-400 text-lg font-semibold text-center">{successMessage}</p>
+            <motion.button 
+              className="mt-4 px-4 py-2 bg-green-600 text-white rounded-md shadow-md hover:bg-green-500 transition-colors duration-200"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowModal(false)}
+            >
+              Close
+            </motion.button>
           </div>
         </motion.div>
       )}
