@@ -10,10 +10,10 @@ import agentsConfig from '../lib/agents.json'
  
 export default function Sidebar({ setActiveView, activeView }) {
   const menuItems = [
-    { text: 'chat', icon: <MessageCircleMore/>, view: 'chat', color: '#7BB3F5' },
-    { text: 'flashcards', icon: <School2Icon />, view: 'flashcards', color: '#F5B97B' },
-    { text: 'scenarios', icon: <BrainIcon />, view: 'scenarios', color: "#B97BF5" },
-    { text: 'tests', icon: <MessageCircleQuestionIcon />, view: 'tests', color: '#7BB3F5' },
+    { text: 'Chat', icon: <MessageCircleMore/>, view: 'chat', color: '#7BB3F5' },
+    { text: 'Flashcards', icon: <School2Icon />, view: 'flashcards', color: '#F5B97B' },
+    { text: 'Scenarios', icon: <BrainIcon />, view: 'scenarios', color: "#B97BF5" },
+    { text: 'Tests', icon: <MessageCircleQuestionIcon />, view: 'tests', color: '#7BB3F5' },
   ]
   const [agent, setAgent] = React.useState(null)
   const [agentConfig, setAgentConfig] = React.useState(null)

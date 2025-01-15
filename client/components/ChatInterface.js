@@ -7,7 +7,10 @@ import { Label } from '@/components/ui/label'
 import ReactMarkdown from 'react-markdown'
 import { Slider } from '@/components/ui/slider'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-
+import { Pin } from 'lucide-react' // Importing pin icon from lucide-react
+import db from '../utils/firestore';
+import { collection, addDoc } from 'firebase/firestore';
+import { motion } from 'framer-motion'; // Importing motion for animations
 
 const comprehensionLevels = ["Layman", "High School", "College", "Expert"]
 const contentLengths = ["Short", "Medium", "Long"]
@@ -38,8 +41,8 @@ const SliderOption = ({ title, val, setVal, options }) => {
             <li key={index} className='list-disc'>{option}</li>
           ))}
         </ul>
-        </div>
-  </div>
+      </div>
+    </div>
   )
 }
 
@@ -48,9 +51,11 @@ export default function ChatInterface() {
   const [comprehensionLevelIndex, setComprehensionLevelIndex] = useState(0)
   const [contentLengthIndex, setContentLengthIndex] = useState(0)
   const [toneIndex, setToneIndex] = useState(0)
-  const [chat, setChat] = useState([{user: 'ai', text: 'Hello! I am your Study Buddy. How can I help you today?'}])
+  const [chat, setChat] = useState([{user: 'ai', text: 'Hello! I am your Study Buddy. How can I help you today?', pinned: false}])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [successMessage, setSuccessMessage] = useState('') // State for success message
+  const [showModal, setShowModal] = useState(false); // State for modal visibility
 
   const generateResponse = async (prompt) => {
     setIsLoading(true)
@@ -59,7 +64,7 @@ export default function ChatInterface() {
       const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GOOGLE_API_KEY)
       const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" })
       const result = await model.generateContent(prompt)
-      chat.push({ user: 'ai', text: result.response.text() })
+      chat.push({ user: 'ai', text: result.response.text(), pinned: false })
       setChat(chat)
     } catch (error) {
       console.error('Error generating AI response:', error)
@@ -77,6 +82,7 @@ export default function ChatInterface() {
     setChat(chat)
     generateResponse(prompt)
   }
+  
   const concatenateChat = (chat) => {
     let result = ''
     for (let i = 0; i < chat.length; i++) {
@@ -96,6 +102,32 @@ export default function ChatInterface() {
     }
   }
 
+  const handlePinMessage = async (text, index) => {
+    // Check if the message is already pinned
+    if (chat[index].pinned) {
+      setError('This message is already pinned.');
+      return;
+    }
+
+    // Function to store the chat message in Firebase
+    console.log('Pinning message:', text);
+    try {
+      const docRef = await addDoc(collection(db, 'pins'), {
+        response: text,
+      });
+      console.log('Document written with ID: ', docRef.id);
+      chat[index].pinned = true; // Mark the message as pinned
+      setChat([...chat]); // Update the chat state
+      setSuccessMessage('Message pinned successfully!'); // Set success message
+      setShowModal(true); // Show modal
+      setTimeout(() => {
+        setShowModal(false); // Hide modal after 3 seconds
+      }, 3000);
+    } catch (err) {
+      console.error('Error adding document:', err);
+    }
+  }
+
   return (
     <div className="flex flex-col h-full gap-4">
       {/* Controls */}
@@ -103,29 +135,50 @@ export default function ChatInterface() {
         <SliderOption title="Comprehension Level" val={comprehensionLevelIndex} setVal={setComprehensionLevelIndex} options={comprehensionLevels} />
         <SliderOption title="Content Length" val={contentLengthIndex} setVal={setContentLengthIndex} options={contentLengths} />
         <SliderOption title="Tone" val={toneIndex} setVal={setToneIndex} options={tones} />
-    </div>
+      </div>
 
       {/* Chat Box */}
-        <p className="text-gray-400">Chat messages will appear here</p>
+      <p className="text-gray-400">Chat messages will appear here</p>
       <Card className="flex flex-col h-[70vh] custom-scrollbar overflow-scroll p-4 overflow-y-auto bg-grey-900/90 text-white">
         {chat.map((message, index) => (
           <div key={index} className={`flex bg-gray-900 border border-gray-700 rounded-xl w-max max-w-full p-3 gap-2 mt-2`} style={{alignSelf: message.user==='ai'?'flex-start':'flex-end'}}>
             {message.user==='ai' &&
             <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>BD</AvatarFallback></Avatar>}
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>BD</AvatarFallback>
+            </Avatar>}
             <div className="flex items-center">
-              <ReactMarkdown className="text-white">{message.text}</ReactMarkdown></div>  
-              {message.user!=='ai' && <Avatar className=''> <AvatarImage src=''/>
-            <AvatarFallback>YO</AvatarFallback>
+              <ReactMarkdown className="text-white">{message.text}</ReactMarkdown>
+              {message.user === 'ai' && (
+                <Button onClick={() => handlePinMessage(message.text, index)} className="ml-2 p-1 bg-transparent border-none">
+                  <Pin className={`w-4 h-4 ${message.pinned ? 'text-yellow-500' : 'text-gray-400'}`} />
+                </Button>
+              )}
+            </div>  
+            {message.user!=='ai' && <Avatar className=''> <AvatarImage src=''/>
+              <AvatarFallback>YO</AvatarFallback>
             </Avatar>}
           </div>
         ))}
         {isLoading && <p className="text-gray-400">Loading...</p>}
       </Card>
 
+      {/* Success Modal */}
+      {showModal && (
+        <motion.div 
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <div className="bg-white p-4 rounded-lg shadow-lg">
+            <p className="text-green-500">{successMessage}</p>
+          </div>
+        </motion.div>
+      )}
+
       {/* Input and Send Button */}
-      {error && <p className='text-[#ff2222] cursor-pointer hover:underline' onClick={handleRetry}>{error}</p>}
+      {error && <p className='text-[#ff2222] cursor-pointer hover:underline' onClick={() => setError('')}>{error}</p>}
       <div className="flex items-center gap-2">
         <input type='text' placeholder='Type your message here...' value={message} onChange={(e) => setMessage(e.target.value)} className='flex-grow h-[38px] px-4 rounded-md bg-gray-700 outline-none text-white placeholder-gray-400' />
         <Button onClick={handleSendMessage} className='bg-[#9f3ec5] text-white' disabled={!message.trim()}>
