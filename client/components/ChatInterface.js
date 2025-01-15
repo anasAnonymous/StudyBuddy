@@ -11,6 +11,8 @@ import { Pin } from 'lucide-react' // Importing pin icon from lucide-react
 import db from '../utils/firestore';
 import { collection, addDoc } from 'firebase/firestore';
 import { motion } from 'framer-motion'; // Importing motion for animations
+import { clerkClient } from '@clerk/clerk-sdk-node'
+import { useAuth } from '@clerk/nextjs'; // Import useAuth
 
 const comprehensionLevels = ["Layman", "High School", "College", "Expert"]
 const contentLengths = ["Short", "Medium", "Long"]
@@ -47,6 +49,7 @@ const SliderOption = ({ title, val, setVal, options }) => {
 }
 
 export default function ChatInterface() {
+  const { userId } = useAuth(); // Use useAuth to get the user ID
   const [message, setMessage] = useState('')
   const [comprehensionLevelIndex, setComprehensionLevelIndex] = useState(0)
   const [contentLengthIndex, setContentLengthIndex] = useState(0)
@@ -114,6 +117,7 @@ export default function ChatInterface() {
     try {
       const docRef = await addDoc(collection(db, 'pins'), {
         response: text,
+        uid: userId, // Store the user ID alongside the response
       });
       console.log('Document written with ID: ', docRef.id);
       chat[index].pinned = true; // Mark the message as pinned
@@ -125,6 +129,13 @@ export default function ChatInterface() {
       }, 3000);
     } catch (err) {
       console.error('Error adding document:', err);
+    }
+  }
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // Prevent default behavior (like form submission)
+      handleSendMessage(); // Call the send message function
     }
   }
 
@@ -188,7 +199,14 @@ export default function ChatInterface() {
       {/* Input and Send Button */}
       {error && <p className='text-[#ff2222] cursor-pointer hover:underline' onClick={() => handleRetry()}>{error}</p>}
       <div className="flex items-center gap-2">
-        <input type='text' placeholder='Type your message here...' value={message} onChange={(e) => setMessage(e.target.value)} className='flex-grow h-[38px] px-4 rounded-md bg-gray-700 outline-none text-white placeholder-gray-400' />
+        <input 
+          type='text' 
+          placeholder='Type your message here...' 
+          value={message} 
+          onChange={(e) => setMessage(e.target.value)} 
+          onKeyDown={handleKeyDown} // Add key down event handler
+          className='flex-grow h-[38px] px-4 rounded-md bg-gray-700 outline-none text-white placeholder-gray-400' 
+        />
         <Button onClick={handleSendMessage} className='bg-[#9f3ec5] text-white' disabled={!message.trim()}>
           Send
         </Button>

@@ -21,6 +21,7 @@ export default function TestView() {
   const [error, setError] = useState("")
   const [score, setScore] = useState(null)
   const [feedback, setFeedback] = useState([])
+  const [dialogOpen, setDialogOpen] = useState(false)
 
   const getQuestionsFromGemini = async (topic) => {
     const { GoogleGenerativeAI } = require("@google/generative-ai")
@@ -160,13 +161,15 @@ export default function TestView() {
         quiz.questions.map(q => q.options[q.correctAnswer])
       )
 
-      // Extract score from evaluation
-      const scoreMatch = evaluation.match(/(\d+)\s*(?:out\s*of|\/)\s*5/)
-      const extractedScore = scoreMatch ? parseInt(scoreMatch[1]) : 0
+      // Calculate actual score by comparing user answers with correct answers
+      const actualScore = quiz.questions.reduce((score, question, index) => {
+        return score + (answers[index] === question.correctAnswer ? 1 : 0)
+      }, 0)
 
-      setScore(extractedScore)
+      setScore(actualScore)
       setFeedback(evaluation.split('\n').filter(line => line.trim()))
       setShowResults(true)
+      setDialogOpen(true)
     } catch (error) {
       console.error('Error evaluating quiz:', error)
       setError("Failed to evaluate quiz. Please try again.")
@@ -295,7 +298,7 @@ export default function TestView() {
         </div>
       )}
 
-      <Dialog open={showResults} onOpenChange={setShowResults}>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Quiz Results</DialogTitle>
@@ -310,6 +313,7 @@ export default function TestView() {
             <p className="text-muted-foreground">
               Review your answers above to see detailed feedback for each question.
             </p>
+            <Button onClick={resetQuiz}>Try New Quiz</Button>
           </div>
         </DialogContent>
       </Dialog>
