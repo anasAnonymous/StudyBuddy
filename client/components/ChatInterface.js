@@ -190,7 +190,7 @@ export default function ChatInterface() {
       )}
 
       {/* Input and Send Button */}
-      {error && <p className='text-[#ff2222] cursor-pointer hover:underline' onClick={() => setError('')}>{error}</p>}
+      {error && <p className='text-[#ff2222] cursor-pointer hover:underline' onClick={() => handleRetry()}>{error}</p>}
       <div className="flex items-center gap-2">
         <input type='text' placeholder='Type your message here...' value={message} onChange={(e) => setMessage(e.target.value)} className='flex-grow h-[38px] px-4 rounded-md bg-gray-700 outline-none text-white placeholder-gray-400' />
         <Button onClick={handleSendMessage} className='bg-[#9f3ec5] text-white' disabled={!message.trim()}>
