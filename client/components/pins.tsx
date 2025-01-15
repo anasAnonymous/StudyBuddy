@@ -4,27 +4,32 @@ import db from '../utils/firestore';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import DeleteItem from './deleteItem';
 import { motion } from 'framer-motion';
+import { useAuth } from '@clerk/nextjs'; // Import useAuth
 
 interface PinItem {
   id: string;
   response: string; // Assuming 'response' is a string
+  uid: string; // Add uid property to the interface
 }
 
 const PinBoard = () => {
+  const { userId } = useAuth(); // Use useAuth to get the user ID
   const [items, setItems] = useState<PinItem[]>([]);
 
   useEffect(() => {
     const fetchItems = async () => {
       const QuerySnapshot = await getDocs(collection(db, 'pins'));
-      setItems(
-        QuerySnapshot.docs.map((doc) => ({
+      const fetchedItems = QuerySnapshot.docs
+        .map((doc) => ({
           id: doc.id,
           response: doc.data().response, // Changed to 'response'
-        })) as PinItem[]
-      );
+          uid: doc.data().uid, // Assuming 'uid' is stored in the document
+        })) as PinItem[];
+
+      setItems(fetchedItems.filter(item => item.uid === userId)); // Filter items by user ID
     };
     fetchItems();
-  }, []);
+  }, [userId]); // Add userId as a dependency
 
   const handleDelete = async (id: string) => {
     await deleteDoc(doc(db, 'pins', id)); // Use document id to delete

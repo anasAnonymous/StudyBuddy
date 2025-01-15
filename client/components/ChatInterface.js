@@ -11,6 +11,8 @@ import { Pin } from 'lucide-react' // Importing pin icon from lucide-react
 import db from '../utils/firestore';
 import { collection, addDoc } from 'firebase/firestore';
 import { motion } from 'framer-motion'; // Importing motion for animations
+import { clerkClient } from '@clerk/clerk-sdk-node'
+import { useAuth } from '@clerk/nextjs'; // Import useAuth
 
 const comprehensionLevels = ["Layman", "High School", "College", "Expert"]
 const contentLengths = ["Short", "Medium", "Long"]
@@ -47,6 +49,7 @@ const SliderOption = ({ title, val, setVal, options }) => {
 }
 
 export default function ChatInterface() {
+  const { userId } = useAuth(); // Use useAuth to get the user ID
   const [message, setMessage] = useState('')
   const [comprehensionLevelIndex, setComprehensionLevelIndex] = useState(0)
   const [contentLengthIndex, setContentLengthIndex] = useState(0)
@@ -114,6 +117,7 @@ export default function ChatInterface() {
     try {
       const docRef = await addDoc(collection(db, 'pins'), {
         response: text,
+        uid: userId, // Store the user ID alongside the response
       });
       console.log('Document written with ID: ', docRef.id);
       chat[index].pinned = true; // Mark the message as pinned
