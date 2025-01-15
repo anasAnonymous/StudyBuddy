@@ -1,5 +1,5 @@
 'use client'
-import {MessageCircleMore, School2Icon, MessageCircleQuestionIcon, BrainIcon } from 'lucide-react'
+import {MessageCircleMore, School2Icon, MessageCircleQuestionIcon, BrainIcon, Pin } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Brain, LineChart, Shield } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -14,6 +14,7 @@ export default function Sidebar({ setActiveView, activeView }) {
     { text: 'Flashcards', icon: <School2Icon />, view: 'flashcards', color: '#F5B97B' },
     { text: 'Scenarios', icon: <BrainIcon />, view: 'scenarios', color: "#B97BF5" },
     { text: 'Tests', icon: <MessageCircleQuestionIcon />, view: 'tests', color: '#7BB3F5' },
+    { text: 'Pins', icon: <Pin />, view: 'pins', color: '#F5B97B' }, 
   ]
   const [agent, setAgent] = React.useState(null)
   const [agentConfig, setAgentConfig] = React.useState(null)
